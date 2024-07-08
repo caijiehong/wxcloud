@@ -1,5 +1,5 @@
 # 二开推荐阅读[如何提高项目构建效率](https://developers.weixin.qq.com/miniprogram/dev/wxcloudrun/src/scene/build/speed.html)
-FROM alpine:3.13
+FROM alpine:3.16
 
 # 容器默认时区为UTC，如需使用上海时间请启用以下时区设置命令
 # RUN apk add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo Asia/Shanghai > /etc/timezone
@@ -21,7 +21,7 @@ RUN npm config set registry https://mirrors.cloud.tencent.com/npm/
 COPY . /app
 
 # npm 安装依赖
-RUN npm install && npm run build
+RUN node --version && npm install && npm run build && ls -al
 
 # 执行启动命令.
 # 写多行独立的CMD命令是错误写法！只有最后一行CMD命令会被执行，之前的都会被忽略，导致业务报错。
