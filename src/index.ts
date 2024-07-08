@@ -1,10 +1,17 @@
-const Koa = require("koa");
-const Router = require("koa-router");
-const logger = require("koa-logger");
-const bodyParser = require("koa-bodyparser");
-const fs = require("fs");
-const path = require("path");
-const { init: initDB, Counter } = require("./db");
+// const Router = require("koa-router");
+// const logger = require("koa-logger");
+// const bodyParser = require("koa-bodyparser");
+// const fs = require("fs");
+// const path = require("path");
+// const { init: initDB, Counter } = require("./db");
+
+import Koa from "koa";
+import Router from "koa-router";
+import logger from "koa-logger";
+import bodyParser from "koa-bodyparser";
+import fs from "fs";
+import path from "path";
+import { init as initDB, Counter } from "./db";
 
 const router = new Router();
 
@@ -18,7 +25,7 @@ router.get("/", async (ctx) => {
 // 更新计数
 router.post("/api/count", async (ctx) => {
   const { request } = ctx;
-  const { action } = request.body;
+  const { action } = request.body as { action: string };
   if (action === "inc") {
     await Counter.create();
   } else if (action === "clear") {
@@ -61,7 +68,7 @@ const port = process.env.PORT || 80;
 async function bootstrap() {
   await initDB();
   app.listen(port, () => {
-    console.log("启动成功", port);
+    console.log("启动成功 0708", port);
   });
 }
 bootstrap();
