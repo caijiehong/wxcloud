@@ -1,26 +1,12 @@
-// const Router = require("koa-router");
-// const logger = require("koa-logger");
-// const bodyParser = require("koa-bodyparser");
-// const fs = require("fs");
-// const path = require("path");
-// const { init: initDB, Counter } = require("./db");
-
 import Koa from "koa";
 import Router from "koa-router";
 import logger from "koa-logger";
+import koaStatic from "koa-static";
 import bodyParser from "koa-bodyparser";
-import fs from "fs";
 import path from "path";
 import { init as initDB, Counter } from "./db";
 
 const router = new Router();
-
-const homePage = fs.readFileSync(path.join(__dirname, "index.html"), "utf-8");
-
-// 首页
-router.get("/", async (ctx) => {
-  ctx.body = homePage;
-});
 
 // 更新计数
 router.post("/api/count", async (ctx) => {
@@ -62,13 +48,20 @@ app
   .use(logger())
   .use(bodyParser())
   .use(router.routes())
-  .use(router.allowedMethods());
+  .use(router.allowedMethods())
+  .use(koaStatic(path.join(__dirname, "../public")));
 
 const port = process.env.PORT || 80;
 async function bootstrap() {
-  await initDB();
   app.listen(port, () => {
     console.log("启动成功 0708", port);
   });
+  try {
+    await initDB();
+  } catch (error) {
+    console.error("数据库初始化失败");
+
+    console.error(error);
+  }
 }
 bootstrap();
