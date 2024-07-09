@@ -26,9 +26,25 @@ const Counter = sequelize.define("Counter", {
   },
 });
 
+const WxAccessToken = sequelize.define("WxAccessToken", {
+  appId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  token: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  updateTs: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+});
+
 // 数据库初始化方法
 async function init() {
   await Counter.sync({ alter: true });
+  await WxAccessToken.sync({ alter: true });
 }
 
 // 导出初始化方法和模型
