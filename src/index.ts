@@ -5,6 +5,7 @@ import koaStatic from "koa-static";
 import bodyParser from "koa-bodyparser";
 import path from "path";
 import { init as initDB } from "./db";
+import count from "./controller/count";
 
 const router = new Router();
 
@@ -14,6 +15,7 @@ router.get("/api/wx_openid", async (ctx) => {
     ctx.body = ctx.request.headers["x-wx-openid"];
   }
 });
+count(router);
 
 const app = new Koa();
 app
