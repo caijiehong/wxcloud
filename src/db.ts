@@ -1,5 +1,4 @@
-// const { Sequelize, DataTypes } = require("sequelize");
-import { Sequelize, DataTypes } from "sequelize";
+import { Sequelize, DataTypes, Model } from "sequelize";
 
 // 从环境变量中读取数据库配置
 const { MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_ADDRESS = "" } = process.env;
@@ -26,7 +25,19 @@ const Counter = sequelize.define("Counter", {
   },
 });
 
-const WxAccessToken = sequelize.define("WxAccessToken", {
+type WxAccessTokenAttributes = {
+  appId: string;
+  updateTs: Date;
+  token: string;
+};
+
+class MWxAccessToken extends Model<WxAccessTokenAttributes> {
+  declare appId: string;
+  declare updateTs: Date;
+  declare token: string;
+}
+
+const WxAccessToken = sequelize.define<MWxAccessToken>("WxAccessToken", {
   appId: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -48,4 +59,4 @@ async function init() {
 }
 
 // 导出初始化方法和模型
-export { init, Counter };
+export { init, Counter, WxAccessToken };
