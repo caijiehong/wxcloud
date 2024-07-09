@@ -6,6 +6,7 @@ import bodyParser from "koa-bodyparser";
 import path from "path";
 import { init as initDB } from "./db";
 import count from "./controller/count";
+import wxAccessToken from "./controller/wxAccessToken";
 
 const router = new Router();
 
@@ -16,6 +17,7 @@ router.get("/api/wx_openid", async (ctx) => {
   }
 });
 count(router);
+wxAccessToken(router);
 
 const app = new Koa();
 app
