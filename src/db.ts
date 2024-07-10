@@ -46,7 +46,7 @@ const WxAccessToken = sequelize.define<MWxAccessToken>(
       allowNull: false,
     },
     token: {
-      type: DataTypes.CHAR(256),
+      type: DataTypes.CHAR(255),
       allowNull: false,
     },
   },
