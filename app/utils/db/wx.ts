@@ -1,7 +1,13 @@
 import { Sequelize, DataTypes, Model } from "sequelize";
 
 type WxAccessTokenAttributes = {
+  /**
+   * 小程序的 appId
+   */
   appId: string;
+  /**
+   * 小程序的 access token
+   */
   token: string;
 };
 
@@ -40,12 +46,23 @@ export function defineModelAccessToken(sequelize: Sequelize) {
 }
 
 type AppInfoAttributes = {
-  appId: string;
-  appSecret: string;
+  /**
+   * 小程序的 appId
+   */
+  miniAppId: string;
+  /**
+   * 小程序的 appSecret
+   */
+  miniAppSecret: string;
+  /**
+   * 云开发环境 ID
+   */
+  wxCloudEnv: string;
 };
 class MAppInfo extends Model<AppInfoAttributes> {
-  declare appId: string;
-  declare appSecret: string;
+  declare miniAppId: string;
+  declare miniAppSecret: string;
+  declare wxCloudEnv: string;
   declare readonly id: number;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
@@ -55,20 +72,26 @@ export function defineModelAppInfo(sequelize: Sequelize) {
   const AppInfo = sequelize.define<MAppInfo>(
     "AppInfo",
     {
-      appId: {
+      miniAppId: {
         type: DataTypes.CHAR(128),
         allowNull: false,
       },
-      appSecret: {
+      miniAppSecret: {
         type: DataTypes.CHAR(255),
         allowNull: false,
+        defaultValue: "",
+      },
+      wxCloudEnv: {
+        type: DataTypes.CHAR(255),
+        allowNull: false,
+        defaultValue: "",
       },
     },
     {
       indexes: [
         {
           unique: true,
-          fields: ["appId"],
+          fields: ["miniAppId"],
         },
       ],
     }

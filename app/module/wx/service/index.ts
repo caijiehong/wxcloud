@@ -12,12 +12,26 @@ export class WxApiService {
   @Inject()
   logger: EggLogger;
 
+  async getAppInfo(appId: string) {
+    const AppInfo = db.getModelAppInfo();
+    const resAppInfo = await AppInfo.findOne({
+      where: {
+        miniAppId: appId,
+      },
+    });
+
+    if (!resAppInfo) {
+      throw new Error("appId not found");
+    }
+    return resAppInfo.toJSON();
+  }
+
   async getAccessToken(appId: string) {
     const WxAccessToken = db.getModelWxAccessToken();
 
     const findToken = await WxAccessToken.findOne({
       where: {
-        appId,
+        appId: appId,
       },
     });
 
@@ -27,18 +41,12 @@ export class WxApiService {
       findToken && findToken.updatedAt.getTime() + TokenExpire > Date.now();
 
     if (!isTokenValid) {
-      const AppInfo = db.getModelAppInfo();
-      const resAppInfo = await AppInfo.findOne({
-        where: {
-          appId,
-        },
-      });
+      const resAppInfo = await this.getAppInfo(appId);
 
-      if (!resAppInfo) {
-        throw new Error("appId not found");
-      }
-
-      const res = await this.getAccessTokenFromSdk(appId, resAppInfo.appSecret);
+      const res = await this.getAccessTokenFromSdk(
+        appId,
+        resAppInfo.miniAppSecret
+      );
       if (res.errcode) {
         throw res;
       }
@@ -49,7 +57,7 @@ export class WxApiService {
         await findToken.save();
       } else {
         await WxAccessToken.create({
-          appId,
+          appId: appId,
           token: wxToken,
         });
       }
@@ -72,6 +80,24 @@ export class WxApiService {
       access_token?: string;
       expires_in?: number;
     };
+
+    return json;
+  }
+
+  async invokeCloudFunction(appId: string, fun: string, data: unknown) {
+    const appInfo = await this.getAppInfo(appId);
+    const wxToken = (await this.getAccessToken(appId)).wxToken;
+    const url = `https://api.weixin.qq.com/tcb/invokecloudfunction`;
+    const query = `access_token=${wxToken}`;
+
+    const body = { env: appInfo.wxCloudEnv, name: fun, req_data: data };
+
+    const res = await fetch(`${url}?${query}`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+
+    const json = await res.json();
 
     return json;
   }
