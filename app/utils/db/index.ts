@@ -1,5 +1,8 @@
 import { Sequelize } from "sequelize";
-import { defineModel as defineWxAccessToken } from "./wxAccessToken";
+import {
+  defineModelAccessToken as defineWxAccessToken,
+  defineModelAppInfo,
+} from "./wx";
 
 // 从环境变量中读取数据库配置
 const { MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_ADDRESS = "" } = process.env;
@@ -8,6 +11,7 @@ const [host, port] = MYSQL_ADDRESS.split(":");
 
 export const db = (function () {
   let WxAccessToken: ReturnType<typeof defineWxAccessToken> | null = null;
+  let AppInfo: ReturnType<typeof defineModelAppInfo> | null = null;
   /**
    * 初始化数据库
    */
@@ -27,6 +31,8 @@ export const db = (function () {
 
     WxAccessToken = defineWxAccessToken(sequelize);
     await WxAccessToken.sync({ alter: true });
+    AppInfo = defineModelAppInfo(sequelize);
+    await AppInfo.sync({ alter: true });
   }
 
   function getModelWxAccessToken() {
@@ -36,8 +42,16 @@ export const db = (function () {
     return WxAccessToken;
   }
 
+  function getModelAppInfo() {
+    if (!AppInfo) {
+      throw new Error("AppInfo is not initialized");
+    }
+    return AppInfo;
+  }
+
   return {
     init,
     getModelWxAccessToken,
+    getModelAppInfo,
   };
 })();
