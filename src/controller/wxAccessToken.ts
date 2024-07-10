@@ -19,8 +19,10 @@ export default function (router: Router) {
 
     let wxToken = "";
 
+    const dbData = findToken?.toJSON();
+
     const isTokenValid =
-      findToken && findToken.updatedAt.getTime() + wx.TokenExpire < Date.now();
+      findToken && findToken.updatedAt.getTime() + wx.TokenExpire > Date.now();
 
     if (!isTokenValid) {
       const res = await wx.getAccessToken(appId, appSecret);
@@ -49,6 +51,8 @@ export default function (router: Router) {
     ctx.body = {
       code: 0,
       data: {
+        dbData,
+        now: Date.now(),
         wxToken,
       },
     };
