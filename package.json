@@ -5,12 +5,12 @@
   "main": "index.js",
   "scripts": {
     "dev": "egg-bin dev --dts",
-    "start": "egg-scripts start --title=egg-server-wxcloud --port=80",
+    "start": "egg-scripts start --title=egg-server-wxcloud --port=80 --workers=1",
     "test": "npm run lint -- --fix && npm run test:local",
-    "ci": "npm run tsc && npm run clean",
+    "ci": "ets && tsc",
     "lint": "eslint . --ext .ts --cache",
-    "tsc": "ets",
-    "clean": "ets -b --clean"
+    "tsc": "tsc",
+    "clean": "tsc -b --clean"
   },
   "author": "",
   "license": "Apache-2.0",
