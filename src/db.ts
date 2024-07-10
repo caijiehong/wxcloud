@@ -27,30 +27,38 @@ const Counter = sequelize.define("Counter", {
 
 type WxAccessTokenAttributes = {
   appId: string;
-  updateTs: Date;
   token: string;
 };
 
 class MWxAccessToken extends Model<WxAccessTokenAttributes> {
   declare appId: string;
-  declare updateTs: Date;
   declare token: string;
+  declare readonly id: number;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
-const WxAccessToken = sequelize.define<MWxAccessToken>("WxAccessToken", {
-  appId: {
-    type: DataTypes.STRING,
-    allowNull: false,
+const WxAccessToken = sequelize.define<MWxAccessToken>(
+  "WxAccessToken",
+  {
+    appId: {
+      type: DataTypes.CHAR(128),
+      allowNull: false,
+    },
+    token: {
+      type: DataTypes.CHAR(256),
+      allowNull: false,
+    },
   },
-  token: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  updateTs: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-});
+  {
+    indexes: [
+      {
+        unique: true,
+        fields: ["appId"],
+      },
+    ],
+  }
+);
 
 // 数据库初始化方法
 async function init() {

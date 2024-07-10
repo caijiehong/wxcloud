@@ -4,6 +4,7 @@
   "description": "微信云托管 koa 框架模板",
   "main": "index.js",
   "scripts": {
+    "test": "node dist/test/index.js",
     "build": "tsc",
     "dev": "tsc --watch",
     "start": "node dist/index.js"
@@ -11,7 +12,7 @@
   "author": "",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=16.0.0"
+    "node": "^18.0.0"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -29,6 +30,7 @@
     "@types/koa-logger": "^3.1.5",
     "@types/koa-router": "^7.4.8",
     "@types/koa-static": "^4.0.4",
+    "@types/node": "^18.19.39",
     "typescript": "^5.5.3"
   }
 }
