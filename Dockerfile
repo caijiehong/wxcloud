@@ -21,7 +21,7 @@ RUN npm config set registry https://mirrors.cloud.tencent.com/npm/
 COPY . /app
 
 # npm 安装依赖
-RUN node --version && npm install && npm run build && ls -al
+RUN node --version && npm install && npm run ci
 
 # 执行启动命令.
 # 写多行独立的CMD命令是错误写法！只有最后一行CMD命令会被执行，之前的都会被忽略，导致业务报错。
