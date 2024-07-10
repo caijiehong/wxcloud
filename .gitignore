@@ -18,3 +18,6 @@ config/**/*.js
 app/**/*.map
 test/**/*.map
 config/**/*.map
+typings/app/index.d.ts
+typings/config/index.d.ts
+typings/config/plugin.d.ts
