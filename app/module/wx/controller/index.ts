@@ -6,13 +6,14 @@ import {
   Inject,
   EggContext,
   Context,
+  HTTPBody,
 } from "@eggjs/tegg";
 import { WxApiService } from "../service";
 
 @HTTPController({
   path: "/wx",
 })
-export class UserController {
+export class WxController {
   @Inject()
   wxApiService: WxApiService;
 
@@ -29,6 +30,29 @@ export class UserController {
     return {
       code: 0,
       data: res,
+    };
+  }
+
+  @HTTPMethod({
+    method: HTTPMethodEnum.POST,
+    path: "fun",
+  })
+  public async fun(
+    @Context() ctx: EggContext,
+    @HTTPBody()
+    body: { appId: string; funName: string; funData: Record<string, string> }
+  ) {
+    const res = await this.wxApiService.invokeCloudFunction(
+      ctx,
+      body.appId,
+      body.funName,
+      body.funData
+    );
+
+    return {
+      code: res.errcode,
+      messsage: res.errmsg,
+      data: res.data,
     };
   }
 }

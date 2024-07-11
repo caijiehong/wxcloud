@@ -79,7 +79,7 @@ export class WxApiService {
     return json;
   }
 
-  async invokeCloudFunction(
+  async invokeCloudFunction<T>(
     @Context() ctx: EggContext,
     appId: string,
     fun: string,
@@ -88,17 +88,30 @@ export class WxApiService {
     const appInfo = await this.getAppInfo(ctx, appId);
     const wxToken = (await this.getAccessToken(ctx, appId)).wxToken;
     const url = `https://api.weixin.qq.com/tcb/invokecloudfunction`;
-    const query = `access_token=${wxToken}`;
-
-    const body = { env: appInfo.wxCloudEnv, name: fun, req_data: data };
+    const query = `access_token=${wxToken}&env=${appInfo.wxCloudEnv}&name=${fun}`;
 
     const res = await fetch(`${url}?${query}`, {
       method: "POST",
-      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
     });
 
-    const json = await res.json();
+    const json = (await res.json()) as {
+      errcode: number;
+      errmsg: string;
+      resp_data?: string;
+    };
 
-    return json;
+    const resData = json.resp_data
+      ? (JSON.parse(json.resp_data) as T)
+      : undefined;
+
+    return {
+      errcode: json.errcode,
+      errmsg: json.errmsg,
+      data: resData,
+    };
   }
 }

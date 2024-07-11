@@ -1,9 +1,11 @@
 import { mock } from "egg-mock/bootstrap";
 import * as db from "@/app/utils/db";
 
-export const MockMiniAppId = "123";
+export const MockMiniAppId = "MockMiniAppId";
 
-export const MockWxToken = "123";
+export const MockWxToken = "MockWxToken";
+
+export const MockCloudEnv = "MockCloudEnv";
 
 export function mockDB() {
   mock(db, "createDB", () => {
@@ -27,10 +29,16 @@ export function mockDB() {
       getModelAppInfo: () => {
         return {
           findOne: async () => {
-            return {
+            const json = {
               miniAppId: MockMiniAppId,
               miniAppSecret: "123",
-              wxCloudEnv: "123",
+              wxCloudEnv: MockCloudEnv,
+            };
+            return {
+              ...json,
+              toJSON: () => {
+                return json;
+              },
             };
           },
         };
