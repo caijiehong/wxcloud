@@ -1,6 +1,5 @@
 // app.ts
 import { Application, IBoot } from "egg";
-import { db } from "./app/utils/db";
 
 export default class implements IBoot {
   private readonly app: Application;
@@ -33,7 +32,7 @@ export default class implements IBoot {
 
   async serverDidReady() {
     this.app.logger.info("serverDidReady", new Date().toLocaleString());
-    db.init();
+    this.app.db.init();
     // 服务器已监听。
   }
 

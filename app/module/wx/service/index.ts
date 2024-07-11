@@ -1,6 +1,5 @@
-import { EggLogger } from "egg";
-import { SingletonProto, AccessLevel, Inject } from "@eggjs/tegg";
-import { db } from "../../../utils/db";
+import { SingletonProto, AccessLevel, Context, EggContext } from "@eggjs/tegg";
+
 const TokenExpire = 7000 * 1000;
 
 @SingletonProto({
@@ -8,12 +7,8 @@ const TokenExpire = 7000 * 1000;
   accessLevel: AccessLevel.PUBLIC,
 })
 export class WxApiService {
-  // 注入一个 logger
-  @Inject()
-  logger: EggLogger;
-
-  async getAppInfo(appId: string) {
-    const AppInfo = db.getModelAppInfo();
+  async getAppInfo(@Context() ctx: EggContext, appId: string) {
+    const AppInfo = ctx.app.db.getModelAppInfo();
     const resAppInfo = await AppInfo.findOne({
       where: {
         miniAppId: appId,
@@ -26,8 +21,8 @@ export class WxApiService {
     return resAppInfo.toJSON();
   }
 
-  async getAccessToken(appId: string) {
-    const WxAccessToken = db.getModelWxAccessToken();
+  async getAccessToken(@Context() ctx: EggContext, appId: string) {
+    const WxAccessToken = ctx.app.db.getModelWxAccessToken();
 
     const findToken = await WxAccessToken.findOne({
       where: {
@@ -41,7 +36,7 @@ export class WxApiService {
       findToken && findToken.updatedAt.getTime() + TokenExpire > Date.now();
 
     if (!isTokenValid) {
-      const resAppInfo = await this.getAppInfo(appId);
+      const resAppInfo = await this.getAppInfo(ctx, appId);
 
       const res = await this.getAccessTokenFromSdk(
         appId,
@@ -84,9 +79,14 @@ export class WxApiService {
     return json;
   }
 
-  async invokeCloudFunction(appId: string, fun: string, data: unknown) {
-    const appInfo = await this.getAppInfo(appId);
-    const wxToken = (await this.getAccessToken(appId)).wxToken;
+  async invokeCloudFunction(
+    @Context() ctx: EggContext,
+    appId: string,
+    fun: string,
+    data: unknown
+  ) {
+    const appInfo = await this.getAppInfo(ctx, appId);
+    const wxToken = (await this.getAccessToken(ctx, appId)).wxToken;
     const url = `https://api.weixin.qq.com/tcb/invokecloudfunction`;
     const query = `access_token=${wxToken}`;
 

@@ -4,12 +4,7 @@ import {
   defineModelAppInfo,
 } from "./wx";
 
-// 从环境变量中读取数据库配置
-const { MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_ADDRESS = "" } = process.env;
-
-const [host, port] = MYSQL_ADDRESS.split(":");
-
-export const db = (function () {
+export function createDB({ userName, password, host, port }) {
   let WxAccessToken: ReturnType<typeof defineWxAccessToken> | null = null;
   let AppInfo: ReturnType<typeof defineModelAppInfo> | null = null;
   /**
@@ -17,22 +12,23 @@ export const db = (function () {
    */
   async function init(): Promise<void> {
     console.log("init db");
-    const sequelize = new Sequelize(
-      "nodejs_demo",
-      MYSQL_USERNAME!,
-      MYSQL_PASSWORD,
-      {
+    try {
+      const sequelize = new Sequelize("nodejs_demo", userName, password, {
         host,
         port: +port,
         dialect:
           "mysql" /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */,
-      }
-    );
+      });
 
-    WxAccessToken = defineWxAccessToken(sequelize);
-    await WxAccessToken.sync({ alter: true });
-    AppInfo = defineModelAppInfo(sequelize);
-    await AppInfo.sync({ alter: true });
+      WxAccessToken = defineWxAccessToken(sequelize);
+      AppInfo = defineModelAppInfo(sequelize);
+
+      const p1 = WxAccessToken.sync({ alter: true });
+      const p2 = AppInfo.sync({ alter: true });
+      await Promise.all([p1, p2]);
+    } catch (error) {
+      console.warn("init db error", error);
+    }
   }
 
   function getModelWxAccessToken() {
@@ -54,4 +50,4 @@ export const db = (function () {
     getModelWxAccessToken,
     getModelAppInfo,
   };
-})();
+}

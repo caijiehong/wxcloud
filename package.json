@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "egg-bin dev --dts",
     "start": "egg-scripts start --title=egg-server-wxcloud --port=80 --workers=1",
-    "test": "npm run lint -- --fix && npm run test:local",
+    "test": "egg-bin test -p",
     "ci": "ets && tsc",
     "lint": "eslint . --ext .ts --cache",
     "tsc": "tsc",
@@ -29,15 +29,17 @@
   },
   "devDependencies": {
     "@eggjs/tsconfig": "1",
-    "egg-bin": "6",
-    "eslint": "9",
-    "eslint-config-egg": "14",
     "@types/koa": "^2.15.0",
     "@types/koa-bodyparser": "^4.3.12",
     "@types/koa-logger": "^3.1.5",
     "@types/koa-router": "^7.4.8",
     "@types/koa-static": "^4.0.4",
+    "@types/mocha": "^10.0.7",
     "@types/node": "^18.19.39",
+    "egg-bin": "6",
+    "egg-mock": "^5.12.5",
+    "eslint": "9",
+    "eslint-config-egg": "14",
     "typescript": "^5.5.3"
   }
 }
