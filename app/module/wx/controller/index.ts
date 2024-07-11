@@ -20,7 +20,7 @@ export class UserController {
     method: HTTPMethodEnum.GET,
     path: "token",
   })
-  async token(
+  public async token(
     @Context() ctx: EggContext,
     @HTTPQuery({ name: "appId" }) appId: string
   ) {

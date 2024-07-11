@@ -3,6 +3,8 @@
   "compilerOptions": {
     "declaration": false,
     "paths": {
+      "@/test/*": ["test/*"],
+      "@/app/*": ["app/*"],
       "@/module/*": ["app/module/*"]
     },
     "noUnusedLocals": false,
