@@ -22,3 +22,4 @@ typings/app/index.d.ts
 typings/config/index.d.ts
 typings/config/plugin.d.ts
 typings/app/extend/application.d.ts
+test/mock/env.mock.json

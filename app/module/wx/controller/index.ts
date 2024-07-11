@@ -18,22 +18,6 @@ export class WxController {
   wxApiService: WxApiService;
 
   @HTTPMethod({
-    method: HTTPMethodEnum.GET,
-    path: "token",
-  })
-  public async token(
-    @Context() ctx: EggContext,
-    @HTTPQuery({ name: "appId" }) appId: string
-  ) {
-    const res = await this.wxApiService.getAccessToken(ctx, appId);
-
-    return {
-      code: 0,
-      data: res,
-    };
-  }
-
-  @HTTPMethod({
     method: HTTPMethodEnum.POST,
     path: "fun",
   })
@@ -51,7 +35,7 @@ export class WxController {
 
     return {
       code: res.errcode,
-      messsage: res.errmsg,
+      message: res.errmsg,
       data: res.data,
     };
   }

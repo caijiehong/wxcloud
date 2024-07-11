@@ -1,11 +1,8 @@
 import { mock } from "egg-mock/bootstrap";
 import * as db from "@/app/utils/db";
+import { env } from "@/test/mock/env";
 
-export const MockMiniAppId = "MockMiniAppId";
-
-export const MockWxToken = "MockWxToken";
-
-export const MockCloudEnv = "MockCloudEnv";
+const { MockCloudEnv, MockMiniAppId, MockWxToken } = env;
 
 export function mockDB() {
   mock(db, "createDB", () => {
